@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development",
-    "build": "vite build --mode production",
+    "dev": "VITE_SERVER_URL=http://localhost:3000 vite --mode development",
+    "build": "vite build ",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "serve": "vite preview --mode production"
+    "serve": "vite preview"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",
