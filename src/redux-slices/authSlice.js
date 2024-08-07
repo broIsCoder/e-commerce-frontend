@@ -67,7 +67,7 @@ export const verifyToken =
 
 const refreshAuthToken = () => async (dispatch) => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/refresh`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}$/refresh`, {
       method: "GET",
       credentials: "include", // Important to include cookies
     });
