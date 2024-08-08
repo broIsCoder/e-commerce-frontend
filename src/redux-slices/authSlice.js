@@ -83,13 +83,11 @@ const refreshAuthToken = () => async (dispatch) => {
       dispatch(authenticate({ authToken: data.authToken }));
       return data.authToken;
     } else {
-      // Dispatch logout action to update the isLoggedIn status
-      // dispatch(logout());
+      dispatch(logout());
       console.log(data.message);
     }
   } catch (error) {
-    // Dispatch logout action to update the isLoggedIn status
-    // dispatch(logout());
+    dispatch(logout());
     console.log(error.message);
   }
   return null;

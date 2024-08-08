@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addAlert } from '../redux-slices/alertsSlice';
-import { logout } from '../redux-slices/authSlice';
+import { logout, verifyToken } from '../redux-slices/authSlice';
 import {
     LayoutGrid,
     User,
@@ -26,20 +26,24 @@ const Sidebar = () => {
     const handleLogout = async () => {
         try {
             setLoading(true);
-            const response = await fetch('/logout', {
+            const options = {
                 method: 'GET',
                 credentials: "include",
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },
-            });
-
-            if (!response.ok) {
-                throw new Error(`${response.status} ${response.statusText}`);
+            };
+            const response = await dispatch(verifyToken('/logout', options));
+            if (!response.ok && response.status === 500) {
+                throw new Error(`${response.status} ${response.message}`);
             }
             const data = await response.json();
-            dispatch(addAlert({ message: data.message, type: data.success ? 'success' : 'warning' }));
+            console.log(data)
+            if (!data.success) {
+                dispatch(addAlert({ message: data.message, type: "warning" }));
+            }
         } catch (error) {
+            console.log(error)
             dispatch(addAlert({ message: error.message, type: 'error' }));
         } finally {
             setLoading(false);
