@@ -59,10 +59,10 @@ const App = () => {
     throw new Error(error)
   }
   return (
-    <>
+    <div className='h-dvh'>
       <Alerts />
       <Outlet />
-    </>
+    </div>
   )
 }
 

@@ -60,7 +60,7 @@ const UserRating = ({ setProduct,productId, rating, changeRating }) => {
             </div>
             <button
                 onClick={handleRating}
-                className="w-full bg-accent-light dark:bg-accent-dark  text-white font-bold py-2 px-4 rounded transition duration-300"
+                className="w-full bg-primary-light hover:bg-primary-dark dark:hover:bg-primary-light dark:bg-primary-dark  text-white font-bold py-2 px-4 rounded transition duration-300"
             >
                 Rate
             </button>

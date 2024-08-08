@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import numberFormatter from '../utils/numberFormatter';
 import { ChevronLeft, ChevronRight, Package2 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
@@ -69,7 +69,7 @@ const MyProduct = () => {
           ></div>
         </div>
         <span className="text-sm text-gray-600 dark:text-gray-400">
-          {product.rating.toFixed(1)}/5 ({product.delieveredBuyers.length})
+          {product.rating}/5 ({product.delieveredBuyers.length})
         </span>
       </div>
     );
@@ -77,8 +77,8 @@ const MyProduct = () => {
 
   const renderInfoRow = (label, value) => (
     <div className="flex justify-between items-center py-1 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
-      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}:</span>
-      <span className="text-sm text-gray-800 dark:text-gray-200">{value}</span>
+      <span className="text-sm font-medium text-gray-600 dark:text-gray-400 text-nowrap">{label}:</span>
+      <span className="text-sm text-gray-800 dark:text-gray-200 truncate">{value}</span>
     </div>
   );
 
@@ -197,8 +197,10 @@ const MyProduct = () => {
         </div>
 
         <div className='flex-1 mt-4'>
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
-            {product.productName}
+          <h2 className="text-2xl hover:underline font-semibold text-gray-800 dark:text-gray-200 mb-2">
+            <Link to={`/products/${product._id}`}>
+              {product.productName}
+            </Link>
           </h2>
           <div className="space-y-1 ">
             {renderInfoRow("ID", product._id)}

@@ -26,9 +26,7 @@ export const authSlice = createSlice({
 
 export const { authenticate, logout } = authSlice.actions;
 
-// thunk to verify token and refresh token if token expires
-export const verifyToken =
-  (url, options = {}) =>
+export const verifyToken =(url, options = {}) =>
   async (dispatch, getState) => {
     const state = getState();
     const authToken = state.auth.authToken;
@@ -67,7 +65,7 @@ export const verifyToken =
 
 const refreshAuthToken = () => async (dispatch) => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}$/refresh`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/refresh`, {
       method: "GET",
       credentials: "include", // Important to include cookies
     });
@@ -86,12 +84,12 @@ const refreshAuthToken = () => async (dispatch) => {
       return data.authToken;
     } else {
       // Dispatch logout action to update the isLoggedIn status
-      dispatch(logout());
+      // dispatch(logout());
       console.log(data.message);
     }
   } catch (error) {
     // Dispatch logout action to update the isLoggedIn status
-    dispatch(logout());
+    // dispatch(logout());
     console.log(error.message);
   }
   return null;

@@ -59,7 +59,7 @@ const MyOrder = () => {
   
   return (
     <div className='container mx-auto max-w-4xl min-h-full'>
-      <div className='flex mb-4 flex-wrap'>
+      <div className='flex flex-wrap'>
         {[
           { type: 'All', icon: ShoppingBag },
           { type: 'Pending', icon: Clock },
@@ -69,9 +69,9 @@ const MyOrder = () => {
           <button
             key={type}
             onClick={() => updateOrderType(type === 'All' ? '' : type.toLowerCase())}
-            className={`flex items-center justify-center gap-1 px-4 py-2 mx-1 mb-2 rounded-full text-sm font-semibold transition duration-300 ease-in-out transform hover:scale-105 ${(orderType === '' && type === 'All') || orderType === type.toLowerCase()
+            className={`flex items-center justify-center gap-1 px-4 py-2 mx-1 mb-4 rounded-full text-sm font-semibold transition duration-300 ease-in-out transform hover:scale-105 ${(orderType === '' && type === 'All') || orderType === type.toLowerCase()
                 ? 'bg-primary-light dark:bg-primary-dark text-white shadow-lg'
-                : 'bg-gray-200 dark:bg-gray-700 text-text-light dark:text-text-dark hover:bg-gray-300 dark:hover:bg-gray-600'
+                : 'bg-white dark:bg-gray-700 text-text-light dark:text-text-dark hover:bg-gray-300 dark:hover:bg-gray-600'
               }`}
           >
             <Icon size={16} className="mr-1" />
@@ -84,7 +84,7 @@ const MyOrder = () => {
           No orders found...
         </div>
       ) : (
-        <ul className='w-full lg:max-w-4xl space-y-8'>
+        <ul className='w-full lg:max-w-4xl space-y-4'>
           {filteredOrders.map((order, index) => (
             <li key={order._id} className={`animate-fadeInUp`} style={{ animationDelay: `${index * 0.1}s` }}>
               <OrderItem order={order} />

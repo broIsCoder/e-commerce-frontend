@@ -7,8 +7,6 @@ import { ShoppingBag } from 'lucide-react';
 
 const Products = () => {
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
-  const authToken = useSelector((state) => state.auth.authToken);
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +52,7 @@ const Products = () => {
   if (products.length > 0) {
     return (
       <div className="mx-auto ">
-         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.map((product) => (
             <div key={product._id} className=''>
               <ProductItem product={product} />

@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "VITE_SERVER_URL=http://localhost:3000 vite --mode development",
+    "host-local-network": "VITE_SERVER_URL=http://192.168.18.61:3000 npx vite --host",
+    "dev": "VITE_SERVER_URL=http://localhost:3000 vite",
     "build": "vite build ",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "serve": "vite preview"

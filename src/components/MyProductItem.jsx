@@ -6,8 +6,8 @@ import { Package2 } from 'lucide-react';
 const MyProductItem = ({ product }) => {
     const renderInfoRow = (label, value) => (
         <div className="flex justify-between items-center py-1 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}:</span>
-            <span className="text-sm text-gray-800 dark:text-gray-200">{value}</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-400 text-nowrap">{label}:</span>
+            <span className="text-sm text-gray-800 dark:text-gray-200 truncate">{value}</span>
         </div>
     );
 

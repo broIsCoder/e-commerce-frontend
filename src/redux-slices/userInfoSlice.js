@@ -29,11 +29,6 @@ export const userInfoSlice = createSlice({
     updateCart: (state, action) => {
       state.user.cart.items = action.payload.cart;
     },
-    removeFromCart: (state, action) => {
-      state.user.cart.items = state.user.cart.items.filter(
-        (item) => item._id !== action.payload.cartItemId
-      );
-    },
     updateOrder: (state, action) => {
       state.user.orders = action.payload.orders;
     },
@@ -47,7 +42,6 @@ export const {
   setUserInfo,
   clearUserInfo,
   updateCart,
-  removeFromCart,
   updateOrder,
   orderCart,
 } = userInfoSlice.actions;

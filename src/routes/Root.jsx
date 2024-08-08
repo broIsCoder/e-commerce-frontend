@@ -27,7 +27,7 @@ const Root = () => {
   }, [showSidebar, dispatch]);
 
   return (
-    <div className="flex flex-col h-screen bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-300">
+    <div className="flex flex-col h-full bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-300">
       <Navbar />
       <div className="flex flex-1 overflow-hidden relative">
         <div
@@ -47,7 +47,7 @@ const Root = () => {
             onClick={() => dispatch(toggleSidebar(false))}
           />
         )}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto bg-blue-200 dark:bg-background-dark">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto bg-blue-200 dark:bg-gray-900">
           <Outlet />
         </main>
        

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import {Link} from 'react-router-dom'
 import { addAlert } from '../redux-slices/alertsSlice';
 import { verifyToken } from '../redux-slices/authSlice';
 import formatDate from '../utils/dateFormatter';
 import numberFormatter from '../utils/numberFormatter';
-import { Calendar, DollarSign, Package2, Truck } from 'lucide-react';
+import { Calendar, DollarSign, Package2, Truck, X } from 'lucide-react';
 import { updateOrder } from '../redux-slices/userInfoSlice';
 
 const OrderItem = ({ order }) => {
@@ -15,7 +16,6 @@ const OrderItem = ({ order }) => {
     orderStatus: order.orderStatus,
     orderDate: order.orderDate
   });
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -30,18 +30,13 @@ const OrderItem = ({ order }) => {
             throw new Error(`${response.status} ${response.statusText}`);
           }
           const data = await response.json();
-          if (data.success) {
-            return { valid: true, ...data.product, quantity: item.quantity };
-          } else {
-            return { valid: false, message: data.message };
-          }
+          return data.success
+            ? { valid: true, ...data.product, quantity: item.quantity }
+            : { valid: false, message: data.message };
         });
 
         const products = await Promise.all(productPromises);
-        setOrderItem((prev) => ({
-          ...prev,
-          products: products
-        }));
+        setOrderItem((prev) => ({ ...prev, products }));
       } catch (error) {
         setError(error.message);
       } finally {
@@ -76,109 +71,124 @@ const OrderItem = ({ order }) => {
   };
 
   if (loading) {
-    return <div className='dark:text-white text-black animate-pulse'>Loading...</div>;
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl p-4 sm:p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/6"></div>
+          </div>
+          {[1, 2].map((i) => (
+            <div key={i} className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-md"></div>
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              </div>
+              <div className="w-1/6 h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            </div>
+          ))}
+          <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
     return <div className='text-red-500 dark:text-red-400 mb-4'>{error}</div>;
   }
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      case 'Cancelled': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+      default: return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+    }
+  };
+
   return (
-    <div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300'>
-      <div className='p-2 sm:p-6'>
-        <div className='flex items-center justify-between mb-2 sm:mb-4'>
-          <h2 className='text-xl font-bold text-gray-800 dark:text-white text-nowrap'>Order Id : {order._id}</h2>
-          {order.orderStatus === 'Pending' && (
-            <button
-              onClick={handleCancelOrder}
-              className='bg-secondary-light dark:bg-secondary-dark text-white font-bold py-2 px-4 text-nowrap rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg'
-            >
-              Cancel Order
-            </button>
-          )}
+    <div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl'>
+      <div className='p-4'>
+        <div className='flex items-center justify-between mb-4'>
+          <h2 className='text-lg font-bold text-gray-800 dark:text-white text-nowrap overflow-hidden text-ellipsis'></h2>
+          <div className='flex items-center space-x-2'>
+            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.orderStatus)}`}>
+              {order.orderStatus}
+            </span>
+            {order.orderStatus === 'Pending' && (
+              <button
+                onClick={handleCancelOrder}
+                className='bg-red-500 hover:bg-red-600 text-white p-1 rounded-full transition duration-300 ease-in-out'
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
 
-        <ul className='space-y-4'>
+        <div className='space-y-4'>
           {orderItem.products.map((product) => (
-            product.valid ? (
-              <li key={product._id} className='flex flex-col md:flex-row justify-between items-start md:items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
-                <div className='flex items-start space-x-4 mb-4 md:mb-0'>
-                  {product?.image ? (
-                    <img src={product.image} alt={product.productName} className='w-24 h-24 object-cover rounded-md' />
-                  ) : (
-                    <div className="w-24 h-24 border-2 border-gray-300 dark:border-gray-600 rounded-md flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                      <Package2 className="w-12 h-12 text-gray-400 dark:text-gray-500" />
-                    </div>
-                  )}
-                  <div>
-                    <h3 className='font-bold text-lg text-gray-800 dark:text-white'>{product.productName}</h3>
-                    <p className='text-sm text-gray-600 dark:text-gray-300'>Seller: {product.email}</p>
-                    <div className='mt-2 flex items-center'>
-                      <span className='text-sm text-gray-600 dark:text-gray-300 mr-2'>Quantity:</span>
-                      <span className='font-semibold text-gray-800 dark:text-white'>{numberFormatter(product.quantity)}</span>
-                    </div>
+            product.valid && (
+              <div key={product._id} className='flex items-center space-x-4 bg-gray-200 dark:bg-gray-700 p-3 rounded-lg'>
+                {product?.images ? (
+                  <img src={product.images[0]} alt={product.productName} className='w-16 h-16 object-cover rounded-md' />
+                ) : (
+                  <div className="w-16 h-16 border-2 border-gray-300 dark:border-gray-600 rounded-md flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                    <Package2 className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                   </div>
+                )}
+                <div className='flex-grow'>
+                  <h3 className='hover:underline font-semibold text-gray-800 dark:text-white'>
+                    <Link to={`/products/${product._id}`}>
+                      {product.productName}
+                    </Link></h3>
+                  <p className='text-sm text-gray-600 dark:text-gray-400'>Qty: {numberFormatter(product.quantity)}</p>
                 </div>
-                <div className='text-left md:text-right'>
-                  <p className='text-lg font-bold text-green-600 dark:text-green-400'>
+                <div className='text-right'>
+                  <p className='font-bold text-green-600 dark:text-green-400'>
                     Rs {numberFormatter(product.price * product.quantity)}
                   </p>
-                  <p className='text-sm text-gray-600 dark:text-gray-400'>
+                  <p className='text-xs text-gray-500 dark:text-gray-400'>
                     Rs {numberFormatter(product.price)} each
                   </p>
                 </div>
-              </li>
-            ) : null
+              </div>
+            )
           ))}
-        </ul>
+        </div>
 
-        <div>
-          {orderItem.products.some(product => !product.valid) && (
-            <div className="mt-4 p-4 bg-red-100 dark:bg-red-900 rounded-lg">
-              <h4 className="text-red-700 dark:text-red-300 font-bold mb-2">Errors:</h4>
-              <ul className="list-disc pl-5">
-                {orderItem.products.map((product, index) => (
-                  !product.valid && (
-                    <li key={index} className="text-red-600 dark:text-red-400">{product.message}</li>
-                  )
-                ))}
-              </ul>
+        {orderItem.products.some(product => !product.valid) && (
+          <div className="mt-4 p-3 bg-red-100 dark:bg-red-900 rounded-lg text-sm">
+            <h4 className="text-red-700 dark:text-red-300 font-semibold mb-1">Errors:</h4>
+            <ul className="list-disc pl-5">
+              {orderItem.products.map((product, index) => (
+                !product.valid && (
+                  <li key={index} className="text-red-600 dark:text-red-400">{product.message}</li>
+                )
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className='mt-4'>
+          <div className='text-sm space-y-2'>
+            <div className='flex justify-between'>
+              <span className='flex items-center space-x-2'>
+                <DollarSign className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <span className='text-gray-700 dark:text-gray-300'>Total:</span>
+              </span>
+              <span className='text-right font-bold text-green-600 dark:text-green-400'>
+                Rs {numberFormatter(order.totalAmount)}
+              </span>
             </div>
-          )}
-
-          <div className='bg-gray-100 dark:bg-gray-700 p-6 mt-4'>
-            <div className='flex flex-col gap-2'>
-              <div className='flex items-end justify-between'>
-                <span className='text-gray-700 dark:text-gray-300 flex items-center'>
-                  <DollarSign className="w-5 h-5 mr-2" />
-                  Total:
-                </span>
-                <span className='text-2xl font-bold text-green-600 dark:text-green-400'>
-                  Rs {numberFormatter(order.totalAmount)}
-                </span>
-              </div>
-              <div className='flex items-center justify-between'>
-                <span className='text-gray-700 dark:text-gray-300 flex items-center'>
-                  <Truck className="w-5 h-5 mr-2" />
-                  Status:
-                </span>
-                <span className={`font-semibold ${
-                  order.orderStatus === "Pending" ? "text-yellow-500" :
-                  order.orderStatus === "Cancelled" ? "text-secondary-light dark:text-red-400" :
-                  "text-green-500"
-                }`}>
-                  {order.orderStatus}
-                </span>
-              </div>
-              <div className='flex items-center justify-between'>
-                <span className='text-gray-700 dark:text-gray-300 flex items-center'>
-                  <Calendar className="w-5 h-5 mr-2" />
-                  Ordered Date:
-                </span>
-                <span className='text-gray-800 dark:text-gray-200'>
-                  {formatDate(order.orderDate)}
-                </span>
-              </div>
+            <div className='flex justify-between'>
+              <span className='flex items-center space-x-2'>
+                <Calendar className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <span className='text-gray-700 dark:text-gray-300'>Ordered:</span>
+              </span>
+              <span className='text-right text-gray-800 dark:text-gray-200 overflow-hidden text-ellipsis text-nowrap'>
+                {formatDate(order.orderDate)}
+              </span>
             </div>
           </div>
         </div>
